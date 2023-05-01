@@ -1,0 +1,17 @@
+.game-board {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+.game-board .game-board-score {
+    position: absolute;
+    inset: 0;
+    background-color: #0007;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 80px;
+}

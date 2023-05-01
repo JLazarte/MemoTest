@@ -1,0 +1,24 @@
+.score {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.score-title {
+  font-size: 50px;
+  color: white;
+}
+
+.score-result {
+  width: 320px;
+  height: 80px;
+}
+
+.score-result-content {
+  padding: 15px;
+  font-size: 30px;
+  color: white;
+  height: 100%;
+}
