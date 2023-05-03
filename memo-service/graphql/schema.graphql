@@ -2,7 +2,6 @@ type MemoTest {
   id: ID!
   name: String!
   images: [MemoTestImage!]
-  best_session: GameSession!
 }
 
 type GameSession {
@@ -46,6 +45,6 @@ type Mutation {
     number_of_pairs: Int!
     state: GameState!
   ): GameSession! @create
-  endGameSession(id: ID!): GameSession! @update
+  endGameSession(id: ID!, state: GameState = COMPLETED): GameSession! @update
   updateGameSession(id: ID!, retries: Int!): GameSession! @update
 }
