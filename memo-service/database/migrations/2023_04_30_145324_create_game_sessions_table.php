@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->enum('state', ['Started', 'Completed']);
             $table->integer('retries');
-            $table->integer('numberOfPairs');
-            $table->foreignId('memoTestId')->references('id')->on('memo_tests');
+            $table->integer('number_of_pairs');
+            $table->foreignId('memo_test_id')->references('id')->on('memo_tests');
             $table->timestamps();
         });
     }

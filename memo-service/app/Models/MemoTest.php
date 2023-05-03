@@ -9,14 +9,10 @@ class MemoTest extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'name'
-    ];
+    public function best_session()
+    {
+        return $this->hasMany(GameSession::class);
+    }
 
     public function images()
     {
