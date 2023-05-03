@@ -1,9 +1,10 @@
 import { CSSProperties } from "react";
 
 export interface GameOptionProps {
+  id: number
   name: string
   played: boolean 
   score?: number
-  link: string
+  onClick?: (id: number) => void
   style?: CSSProperties
 }

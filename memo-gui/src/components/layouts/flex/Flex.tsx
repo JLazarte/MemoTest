@@ -50,7 +50,6 @@ export const Flex = ({
               key={idx}
               className={styles['flex-item']}
               style={{
-                flex: direction === 'grid' ? '' : '1',
                 flexBasis:
                   ['grid', 'flex-grid'].some(el => el == direction) ?
                   `calc(calc(100% / ${maxColumns}) - ${gap}px)` :

@@ -15,24 +15,24 @@ type Story = StoryObj<typeof GameOption>;
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const NoScore: Story = {
   args: {
+    id: 1,
     name: 'Juego de Prueba',
-    link: '.'
   },
 };
 
 export const Played: Story = {
   args: {
+    id: 1,
     name: 'Juego de Prueba',
     played: true,
-    link: '.'
   },
 };
 
 export const PlayedWithScore: Story = {
   args: {
+    id: 1,
     name: 'Juego de Prueba',
     played: true,
     score: 1000,
-    link: '.'
   },
 };

@@ -21,7 +21,7 @@ export const MemoGame = ({
     }}>
       <Flex direction='offset-grid' maxRows={5}>
         {cards.map((card => <Card
-          key={card.label}
+          key={[card.label, card.state].join('#')}
           {...card}
           onClick={(event: CardClickEvent) => onCardSelected?.(event)}
         />))}

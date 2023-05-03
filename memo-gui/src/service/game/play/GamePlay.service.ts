@@ -1,26 +1,27 @@
 import { CardClickEvent, CardContent } from "@/components/atoms/card/Card.props";
-import GameSessionService from "../session/GameSession.service";
 
 
 export default class MemoGameService {
     private cardsSelected: Array<CardClickEvent> = [];
-    private matches: number;
-    private tries: number;
+    private matches: Array<string>;
     private pairs: number;
 
     constructor(
-        private gameSessionService: GameSessionService,
+        private gameTestId: number,
+        private retries: number,
         private cards: Array<CardContent>,
-        private onGameWin: (score: number) => void,
+        private onPairSelected: (gameTestId: number, score: number, retries: number, matches: Array<string>) => void,
+        private onGameWin: (gameTestId: number, score: number) => void,
     ){
+        console.log(cards);
+
         this.pairs = this.cards.length / 2;
-        this.matches = 0;
-        this.tries = 0;
+        this.matches = this.cards
+            .filter(card => card.state == 'matched' )
+            .map(card => card.label);
     }
 
     public onCardSelected(event: CardClickEvent): void {
-        console.log(event)
-
         if (event.state !== 'hide') {
             return;
         }
@@ -30,26 +31,28 @@ export default class MemoGameService {
         this.cardsSelected.push(event);
 
         if (this.cardsSelected.length > 1) {
-            this.tries += 1;
+            this.retries += 1;
 
             const firstCardLabel = this.cardsSelected[0].card.label;
             const hasMatch = this.cardsSelected.every(event => event.card.label == firstCardLabel);
+            const score = Math.floor((this.pairs / this.retries) * 100);
 
             const copy = [ ...this.cardsSelected ]
             this.cardsSelected = [];
 
+            if (hasMatch) {
+                this.matches.push(firstCardLabel);
+            }
+
+            this.onPairSelected(this.gameTestId, score, this.retries, this.matches);
+
             setTimeout(() => {
-                console.log(copy, hasMatch ? 'matched' : 'hide' )
                 copy.forEach(event => event.setState(hasMatch ? 'matched' : 'hide'))
 
-                if (hasMatch) {
-                    this.matches += 1;
-                }
+                console.log(this)
 
-                if (this.matches == this.pairs) {
-                    const score = (this.pairs / this.tries) * 100;
-                    // this.gameSessionService.save();
-                    this.onGameWin(score);
+                if (this.matches.length == this.pairs) {
+                    this.onGameWin(this.gameTestId, score);
                 }
 
             }, 1000);

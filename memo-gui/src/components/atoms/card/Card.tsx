@@ -13,7 +13,6 @@ export const Card = ({
   ...props
 }: CardProps) => {
   const [ innerState, setInnerState ] = useState(state);
-
   return (
     <div
       onClick={() => {

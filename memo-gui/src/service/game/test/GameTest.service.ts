@@ -1,14 +1,6 @@
 import request, { gql } from "graphql-request";
 
-type GameSession = {
-    gameSessionId: number
-    retries: number
-    numberOfPairs: number
-    cardsFounded: Array<string>
-} 
-
-
-export default class GameSessionService {
+export default class GameTestService {
     private GQL_HOST: string;
 
     constructor(ssr: boolean){
@@ -20,7 +12,10 @@ export default class GameSessionService {
             {
                 memoTests{
                     id,
-                    name
+                    name,
+                    images {
+                        name
+                    }
                 }
             }
         `;

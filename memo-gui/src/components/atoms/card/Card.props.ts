@@ -1,5 +1,11 @@
 export interface CardContent {
   /**
+   * Hide: This game card is hidding the content face
+   * Revealed: This game card is showing the content face
+   * Matched: this game card had been already played and has a match
+   */
+  state?: CardState;
+  /**
    * game card contents - should be a bit sensitive
    */
   label: string;
@@ -31,12 +37,6 @@ export interface CardClickEvent {
 }
 
 export interface CardProps extends CardContent {
-  /**
-   * Hide: This game card is hidding the content face
-   * Revealed: This game card is showing the content face
-   * Matched: this game card had been already played and has a match
-   */
-  state?: CardState;
   /**
    * How large the game card should be?
    */

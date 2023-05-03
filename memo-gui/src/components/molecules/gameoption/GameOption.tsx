@@ -9,10 +9,11 @@ import { Flex } from '@layout/flex/Flex';
 import Link from 'next/link';
 
 export const GameOption = ({
+  id,
   name,
   played,
   score,
-  link,
+  onClick,
   style,
   ...props
 }: GameOptionProps) => {
@@ -28,13 +29,16 @@ export const GameOption = ({
           <hr/>
           <br/>
           <Flex direction='grid' maxColumns={2}>
-            { score ? <p><label>Score: </label>{score}</p> : 'Without record'}
-            <Link href={link}>
-              <Button
-                label={played ? 'Continue' : 'Play'}
-                primary={true}
-              />
-            </Link>
+            {
+              score ?
+                <p><label>High Score: </label>{score}</p> :
+                'Without record'
+            }
+            <Button
+              label={played ? 'Continue' : 'Play'}
+              primary={true}
+              onClick={() => onClick?.(id)}
+            />
           </Flex>
         </Texture>
       </Section>
