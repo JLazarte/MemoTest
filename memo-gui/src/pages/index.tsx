@@ -1,45 +1,40 @@
 import { Inter } from 'next/font/google'
 import { Flex } from '@layout/flex/Flex'
-import { Button } from '@atom/button/Button'
 import { Texture } from '@atom/texture/Texture'
-import { Score } from '@molecule/score/Score'
 import { Page } from '@atom/page/Page'
-import { useEffect, useMemo, useState } from 'react'
-import ScoreService from '@/service/Score.service'
-import Link from 'next/link'
+import { GameOption } from '@/components/molecules/gameoption/GameOption'
+import GameTestService from '@/service/game/test/GameTest.service'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export default function Home() {
-  const [scores, setScores] = useState<Array<number | string>>([]);
-
-  const scoreService = useMemo(() => new ScoreService(), []);
-
-  useEffect(() => {
-    setScores(scoreService.getScores())
-  }, [])
+export default function Home({ games }: { games: Array<{ id: number, name: string }> }) {
 
   return (
     <Page title='Home' inter={inter}>
-      <div style={{
-        display: 'flex',
-        flexDirection: 'row',
-        height: '100%'
-      }}>
-        <Texture type='upholstery' style={{ height: '100%' }}>
-          <Score values={scores} style={{ marginTop: '45px' }}/>
-        </Texture>
-        <Texture type='leather' style={{ width: '320px' }} >
-          <Flex direction='column' style={{ height: '200px' }}>
-            <Link href={'/game'}>
-              <Button
-                label='Play'
-                primary={true}
-              />
-            </Link>
-          </Flex>
-        </Texture>
-      </div>
+      <Texture type='upholstery' style={{ height: '100%' }}>
+        <Flex direction='column' style={{ flexWrap: 'nowrap', overflow: 'scroll' }}>
+          { games.map((option: { id: number, name: string }) => 
+            <GameOption  
+              name={option.name}
+              link={`/game/${option.id}`}
+              played={false}
+              score={0}
+              style={{ width: '320px' }}
+            />
+          )}
+        </Flex>
+      </Texture>
     </Page>
   )
 }
+
+
+
+export async function getStaticProps(context: any) {
+  return {
+    props: {
+      games: await (new GameTestService(true).getTests())
+    }
+  }
+}
+

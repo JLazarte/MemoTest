@@ -1,30 +1,21 @@
 import { CardClickEvent, CardContent } from "@/components/atoms/card/Card.props";
-import CardMockService from "./Card.mock.service";
-import ScoreService from "./Score.service";
+import GameSessionService from "../session/GameSession.service";
 
 
 export default class MemoGameService {
-    private cards: Array<CardContent> = [];
     private cardsSelected: Array<CardClickEvent> = [];
-    private matches: number = 0;
-    private tries: number = 0;
+    private matches: number;
+    private tries: number;
+    private pairs: number;
 
     constructor(
-        private pairs: number,
+        private gameSessionService: GameSessionService,
+        private cards: Array<CardContent>,
         private onGameWin: (score: number) => void,
-        private cardService: CardMockService,
-        private scoreService: ScoreService,
-    ){}
-
-    
-
-    public async retrieveCards(): Promise<Array<CardContent>> {
-
-        this.cards = await this.cardService.retrieveCards();
+    ){
+        this.pairs = this.cards.length / 2;
         this.matches = 0;
         this.tries = 0;
-
-        return this.cards;
     }
 
     public onCardSelected(event: CardClickEvent): void {
@@ -57,7 +48,7 @@ export default class MemoGameService {
 
                 if (this.matches == this.pairs) {
                     const score = (this.pairs / this.tries) * 100;
-                    this.scoreService.saveScore(score);
+                    // this.gameSessionService.save();
                     this.onGameWin(score);
                 }
 
