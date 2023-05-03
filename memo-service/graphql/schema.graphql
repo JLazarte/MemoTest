@@ -1,16 +1,17 @@
 type MemoTest {
   id: ID!
   name: String!
-  images: [MemoTestImage!]!
+  images: [MemoTestImage!]
+  best_session: GameSession!
 }
 
 type GameSession {
   id: ID!
+  memo_test_id: ID!
   memo_test: MemoTest!
   retries: Int!
   number_of_pairs: Int!
   state: GameState!
-  pairsSelected: Int!
 }
 
 enum GameState {
@@ -25,26 +26,26 @@ type MemoTestImage {
 }
 
 type Query {
-  memoTests: [MemoTest!]! @all
+  memoTests: [MemoTest!] @all
   memoTest(id: ID! @eq): MemoTest @find
   memoTestImage(id: ID! @eq): MemoTestImage @find
+  gameSessions: [GameSession!]! @all
   gameSession(id: ID! @eq): GameSession @find
 }
 
 type Mutation {
-  createMemoTest(id: ID!, name: String!, images: [MemoTestImage!]): MemoTest! @create
+  #createMemoTest(id: ID!, name: String!, images: [MemoTestImage!]): MemoTest! @create
   deleteMemoTest(id: ID! @eq): MemoTest @delete
 
   addImageToMemoTestImage(name: String!, memo_test_id: ID!): MemoTestImage! @create
   removeImageFromMemoTestImage(name: String! @eq, memo_test_id: ID! @eq): MemoTestImage @delete
 
   createGameSession(
-    memoTestId: ID!
+    memo_test_id: ID!
     retries: Int!
-    numberOfPairs: Int!
+    number_of_pairs: Int!
     state: GameState!
-    pairsSelected: Int!
   ): GameSession! @create
   endGameSession(id: ID!): GameSession! @update
-  updateGameSession(id: ID!, retries: Int!, pairsSelected: Int!): GameSession! @update
+  updateGameSession(id: ID!, retries: Int!): GameSession! @update
 }
