@@ -26,13 +26,14 @@ export default function MemoGamePage({
   },
   cards: Array<CardContent>
 }) {
+  const { id: sessionId, retries, memo_test } = gameSession;
+  const { id: memoTestId } = memo_test;
+
   const [loading, setLoading] = useState(true); 
   const [gameService, setGameService] = useState<any>(); 
   const [score, setScore] = useState(0); 
-  const gameSessionService = useMemo(() => new GameSessionService(), []);
-  const storageService = useMemo(() => new SessionStorageService(), []);
-
-  const { id: sessionId, retries, memo_test } = gameSession;
+  const gameSessionService = useMemo(() => new GameSessionService(), [sessionId]);
+  const storageService = useMemo(() => new SessionStorageService(), [sessionId]);
 
   useEffect(() =>{
     console.log(gameSession);
@@ -43,7 +44,7 @@ export default function MemoGamePage({
 
     setGameService(
       new GamePlayService(
-        memo_test.id,
+        memoTestId,
         retries,
         cards,
         (gameTestId: number, score: number, retries: number, matches: Array<string>) => {
@@ -60,7 +61,9 @@ export default function MemoGamePage({
     );
 
     setLoading(false)
-  }, [])
+  }, [sessionId])
+
+  console.log(gameService);
 
   return (
     <GameBoard score={score}>

@@ -16,9 +16,11 @@ export default class MemoGameService {
         console.log(cards);
 
         this.pairs = this.cards.length / 2;
-        this.matches = this.cards
+        const pairsMached = this.cards
             .filter(card => card.state == 'matched' )
             .map(card => card.label);
+
+        this.matches = Array.from(new Set(pairsMached));
     }
 
     public onCardSelected(event: CardClickEvent): void {
