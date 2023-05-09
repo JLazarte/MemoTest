@@ -8,7 +8,7 @@ const nextConfig = {
     return [
       {
         source: "/graphql",
-        destination: "http://host.docker.internal.:8000/graphql",
+        destination: `${process.env.MEMO_SERVICE}/graphql`,
       },
     ]
   }

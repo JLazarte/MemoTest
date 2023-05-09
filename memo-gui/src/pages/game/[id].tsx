@@ -1,17 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Inter } from 'next/font/google'
 
 import { MemoGame } from '@organism/memogame/MemoGame'
 import { GameBoard } from '@organism/gameboard/GameBoard'
 import { CardClickEvent, CardContent } from '@atom/card/Card.props'
-import { Page } from '@atom/page/Page'
 
 import GamePlayService from '@/service/game/play/GamePlay.service'
 import CardService from '@/service/game/card/Card.service'
 import GameSessionService from '@/service/game/session/GameSession.service'
-import StorageService from '@/service/Storage.service'
-
-const inter = Inter({ subsets: ['latin'] })
+import SessionStorageService from '@/service/game/session/SessionStorage.service'
 
 export default function MemoGamePage({
   gameSession,
@@ -25,25 +21,24 @@ export default function MemoGamePage({
       images: Array<{
         name: string
       }>
-    }
+    },
+    matches: Array<string>
   },
   cards: Array<CardContent>
 }) {
   const [loading, setLoading] = useState(true); 
   const [gameService, setGameService] = useState<any>(); 
   const [score, setScore] = useState(0); 
-  const gameSessionService = useMemo(() => new GameSessionService(false), []);
-  const storageService = useMemo(() => new StorageService(), []);
+  const gameSessionService = useMemo(() => new GameSessionService(), []);
+  const storageService = useMemo(() => new SessionStorageService(), []);
 
   const { id: sessionId, retries, memo_test } = gameSession;
 
   useEffect(() =>{
-    const sessionSaved: any = storageService.get(`GAME_SAVE_FOR_TEST_${memo_test.id}`)
-
     console.log(gameSession);
 
     cards.forEach(card => {
-      card.state = (sessionSaved?.matches || []).some((match: string) => match == card.label) ? 'matched' : card.state
+      card.state = (gameSession?.matches || []).some((match: string) => match == card.label) ? 'matched' : card.state
     })
 
     setGameService(
@@ -68,33 +63,52 @@ export default function MemoGamePage({
   }, [])
 
   return (
-    <Page title='Game' inter={inter}>
-      <GameBoard score={score}>
-          { !loading && <MemoGame
-            cards={cards}
-            onCardSelected={(event: CardClickEvent) => gameService.onCardSelected(event)}
-          />}
-        </GameBoard>
-    </Page>
+    <GameBoard score={score}>
+        { !loading && <MemoGame
+          cards={cards}
+          onCardSelected={(event: CardClickEvent) => gameService.onCardSelected(event)}
+        />}
+    </GameBoard>
   )
 }
 
-export async function getStaticProps(context: any) {
+export async function getServerSideProps(context: any) {
   const gameSessionId = parseInt(context.params.id);
-  const gameSession = await new GameSessionService(true).getSession(gameSessionId);
-  const memoTest = gameSession.memo_test;
 
-  console.log(gameSession)
+  const prefix = 'GAME_SAVE_FOR_TEST_'
+
+  const parseCookie = (value: any) => {
+    if (value) {
+      try {
+        return JSON.parse(value);
+
+      } catch { }
+    }
+
+    return value;
+  }
+
+  const gamesSaved = Object.fromEntries(
+    Object.entries(context.req.cookies)
+      .filter(([key, _]) => key.startsWith(prefix))
+      .map(([key, value]) => [ key.slice(prefix.length), parseCookie(value) ])
+  );
+
+  const savedSession = await new GameSessionService(process.env.MEMO_SERVICE).getSession(gameSessionId);
+
+  console.log('savedSession', savedSession)
+
+  const gameSession = {
+    ...(savedSession),
+    matches: gamesSaved[savedSession.memo_test.id]?.matches || []
+  }
+
+  console.log('gameSession', gameSession)
 
   return {
     props: {
       gameSession,
-      cards: (new CardService()).calculateCards(memoTest.name, memoTest.images)
+      cards: (new CardService()).calculateCards(gameSession.memo_test.name, gameSession.memo_test.images)
     }
   }
-}
-
-
-export async function getStaticPaths() {
-  return { paths: [], fallback: 'blocking' }
 }

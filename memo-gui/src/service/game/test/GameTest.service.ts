@@ -1,10 +1,9 @@
 import request, { gql } from "graphql-request";
 
 export default class GameTestService {
-    private GQL_HOST: string;
+    
 
-    constructor(ssr: boolean){
-        this.GQL_HOST = ssr ? 'http://host.docker.internal.:8000' : '';
+    constructor(private GQL_HOST: string = ''){
     }
     
     public async getTests(): Promise<Array<any>> {
