@@ -57,6 +57,7 @@ export default function Home({
             <GameOption
               id={id}  
               name={name}
+              key={id}
               played={loading ? false : hasSessionSaved(id)}
               score={scores[id]}
               style={{ width: '320px' }}

@@ -8,7 +8,7 @@ const nextConfig = {
     return [
       {
         source: "/graphql",
-        destination: "http://127.0.0.1:8000/graphql",
+        destination: "http://host.docker.internal.:8000/graphql",
       },
     ]
   }

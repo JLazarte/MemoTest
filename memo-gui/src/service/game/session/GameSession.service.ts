@@ -4,7 +4,7 @@ export default class GameSessionService {
     private GQL_HOST: string;
 
     constructor(ssr: boolean){
-        this.GQL_HOST = ssr ? 'http:127.0.0.1:8000' : '';
+        this.GQL_HOST = ssr ? 'http://host.docker.internal.:8000'  : '';
     }
     
     public async getAllSessions(): Promise<Array<any>> {
